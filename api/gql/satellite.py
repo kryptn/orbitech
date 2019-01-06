@@ -1,9 +1,7 @@
 from datetime import datetime
 
 import graphene
-
 import numpy
-
 from graphql import GraphQLError
 
 from utils import orbital_of
