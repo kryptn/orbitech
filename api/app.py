@@ -1,21 +1,13 @@
 import asyncio
-from datetime import datetime
-from json import JSONEncoder
 
 from aiohttp import web
 from aiohttp_graphql import GraphQLView
 from graphql.execution.executors.asyncio import AsyncioExecutor
 
 from gql import schema
+from utils import parse_useful_tle
 
 router = web.RouteTableDef()
-
-
-class MyEncoder(JSONEncoder):
-    def default(self, o):
-        if isinstance(o, datetime):
-            return o.isoformat(timespec='milliseconds')
-        return super().default(o)
 
 
 @router.route('*', '/graphql', name='graphql')
@@ -23,7 +15,7 @@ async def gql(request: web.Request) -> web.Response:
     gql_view = GraphQLView(
         schema=schema,
         executor=AsyncioExecutor(loop=asyncio.get_event_loop()),
-        context={},
+        context={'tles': parse_useful_tle('active.txt')},
         graphiql=True
 
     )
