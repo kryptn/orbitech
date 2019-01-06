@@ -4,6 +4,8 @@ import graphene
 
 
 class Query(graphene.ObjectType):
+    satellite = graphene.Field('gql.Satellite', name=graphene.Argument(graphene.String, required=True))
+
     all_satellites = graphene.Field(graphene.List('gql.Satellite'),
                                     observer=graphene.Argument('gql.ObserverInput'))
     next_satellite_passes = graphene.Field(graphene.List('gql.Passing'),
@@ -30,6 +32,13 @@ class Query(graphene.ObjectType):
             passes.extend(next_passes or [])
 
         return sorted(passes, key=lambda p: p.rise.time)
+
+    def resolve_satellite(self, info, name):
+        tles = info.context['tles']
+
+        this_tle = tles.get(name.upper())
+
+        return Satellite(name=name, tle=this_tle)
 
 
 from gql.satellite import Satellite
