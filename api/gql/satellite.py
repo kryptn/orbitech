@@ -48,7 +48,6 @@ class Satellite(graphene.ObjectType):
     period = graphene.Field(graphene.Float, resolver=element_getter('period'))
     perigee = graphene.Field(graphene.Float, resolver=element_getter('perigee'))
     right_ascension_lon = graphene.Field(graphene.Float, resolver=element_getter('right_ascension_lon'))
-    bstar = graphene.Field(graphene.Float, resolver=element_getter('bstar'))
 
     _orbital = None
 

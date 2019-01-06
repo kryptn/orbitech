@@ -10,6 +10,12 @@ from utils import parse_useful_tle
 router = web.RouteTableDef()
 
 
+@router.get('/-/graphql/schema', name='graphql-schema')
+async def dump_gql_schema(request: web.Request) -> web.Response:
+    payload = schema.introspect()
+    return web.json_response(payload)
+
+
 @router.route('*', '/graphql', name='graphql')
 async def gql(request: web.Request) -> web.Response:
     gql_view = GraphQLView(

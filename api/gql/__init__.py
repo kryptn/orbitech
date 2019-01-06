@@ -19,11 +19,7 @@ class Query(graphene.ObjectType):
         return [newsat(name=name, tle=tle) for name, tle in tles.items()]
 
     def resolve_next_satellite_passes(self, info, length, observer, **kwargs):
-        tles = info.context['tles']
-
-        newsat = partial(Satellite, observer=Observer(**observer))
-
-        satellites = [newsat(name=name, tle=tle) for name, tle in tles.items()]
+        satellites = Query.resolve_all_satellites(self, info, observer, **kwargs)
 
         passes = []
 
