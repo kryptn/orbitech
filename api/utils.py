@@ -14,7 +14,7 @@ def parse_useful_tle(filename, data=None):
     tles = {}
     while data:
         name, line1, line2, *data = data
-        tles[name] = {'tle': f"{name}\n{line1}\n{line2}\n"}
+        tles[name.strip()] = {'tle': f"{name}\n{line1}\n{line2}\n"}
 
     return tles
 
