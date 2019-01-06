@@ -30,8 +30,10 @@ class Satellite(graphene.ObjectType):
 
     observer = graphene.Field('gql.Observer')
 
-    next_passes = graphene.List('gql.Passing', length=graphene.Argument(graphene.Int, required=True),
-                                observer=graphene.Argument('gql.ObserverInput'))
+    next_passes = graphene.List('gql.Passing',
+                                length=graphene.Argument(graphene.Int, required=True),
+                                horizon=graphene.Argument(graphene.Float),
+                                observer=graphene.Argument('gql.ObserverInput', required=True))
 
     epoch = graphene.Field(graphene.DateTime, resolver=element_getter('epoch'))
     eccentricity = graphene.Field(graphene.Float, resolver=element_getter('excentricity'))  # sic
@@ -58,7 +60,7 @@ class Satellite(graphene.ObjectType):
 
         return self._orbital
 
-    def resolve_next_passes(self, info, length, observer=None, **kwargs):
+    def resolve_next_passes(self, info, length, horizon=0, observer=None, **kwargs):
         if not self.orbital:
             return []
 
@@ -70,7 +72,8 @@ class Satellite(graphene.ObjectType):
 
         self.observer = observer or self.observer
 
-        passes = self.orbital.get_next_passes(datetime.utcnow(), length, *(observer or self.observer).u)
+        passes = self.orbital.get_next_passes(datetime.utcnow(), length, *(observer or self.observer).u,
+                                              horizon=horizon)
         if not passes:
             return []
 
